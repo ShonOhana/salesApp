@@ -1,27 +1,44 @@
 package com.example.postapp.ui.main.view;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.postapp.R;
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Objects;
+
+import static android.app.Activity.RESULT_OK;
 
 
-public class DetailFragment extends Fragment {
+public class DetailFragment extends Fragment{
 
     private String image;
     private String itemCost;
@@ -42,6 +59,7 @@ public class DetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
 
         initialPage(view);
+
 
         //purchase button
         Button purchase = view.findViewById(R.id.btn_purchase);
@@ -97,5 +115,6 @@ public class DetailFragment extends Fragment {
             Picasso.get().load(image).into(imageView);
         }
     }
+
 
 }

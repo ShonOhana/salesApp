@@ -1,12 +1,15 @@
 package com.example.postapp.ui.main.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity (indices = @Index(value = {"itemId"}, unique = true)) // - Table
-public class Item {
+public class Item{
 
     //Primary Key AutoIncrement
     @PrimaryKey(autoGenerate = true)
@@ -33,9 +36,6 @@ public class Item {
         this.pictureLink = pictureLink;
         this.costNis = costNis;
     }
-
-
-
 
 
     public int getItemId() {

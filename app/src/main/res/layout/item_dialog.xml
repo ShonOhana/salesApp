@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:drawablePadding="10dp"
             android:padding="10dp"
-            android:text="רכישה"
+            android:text="למוצר"
             android:drawableStart="@drawable/ic_baseline_shop_24"
             android:textAlignment="textStart" />
 
@@ -54,7 +54,7 @@
             android:drawablePadding="10dp"
             android:padding="10dp"
             android:drawableStart="@drawable/ic_baseline_web_24"
-            android:text="אתר"
+            android:text="לאתר"
             android:textAlignment="textStart" />
     </LinearLayout>
 

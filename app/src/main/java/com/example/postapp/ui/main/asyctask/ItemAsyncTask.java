@@ -36,6 +36,7 @@ public class ItemAsyncTask extends AsyncTask<Void, List<Item>, ArrayList<Item>> 
     private StringBuilder bstrb = null;
     private Context context;
 
+
     public ItemAsyncTask(MutableLiveData<List<Item>> listItems, Context context) {
         this.listItems = listItems;
         this.context = context;

@@ -8,23 +8,37 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
 
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.postapp.R;
 import com.example.postapp.ui.main.adapters.ItemAdapter;
+import com.example.postapp.ui.main.asyctask.ItemAsyncTask;
+import com.example.postapp.ui.main.sqlite.room.ItemsDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 
 public class MainFragment extends Fragment {
@@ -33,6 +47,8 @@ public class MainFragment extends Fragment {
     private TextView headerSales;
     private TextView date;
     private EditText searchInput;
+    private ItemAdapter itemAdapter;
+    private boolean layoutNotChanged = true;
 
     public MainFragment() {
 
@@ -49,8 +65,6 @@ public class MainFragment extends Fragment {
         //set the search
         searchInput = view.findViewById(R.id.et_search);
 
-
-
         //set the current sales header
         setSalesTitle(view);
 
@@ -61,10 +75,40 @@ public class MainFragment extends Fragment {
         final RecyclerView recyclerView = view.findViewById(R.id.my_rv);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),2,RecyclerView.VERTICAL,false);
 
+        ImageButton changeLayout = view.findViewById(R.id.layout_btn);
+        changeLayout.setOnClickListener(b->{
+            if (layoutNotChanged){
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                changeLayout.setImageResource(R.drawable.ic_grid);
+                layoutNotChanged = false;
+            }else {
+                recyclerView.setLayoutManager(gridLayoutManager);
+                changeLayout.setImageResource(R.drawable.ic_list);
+                layoutNotChanged = true;
+            }
+
+        });
+
         mViewModel.getmItems().observe(getViewLifecycleOwner(),(items) ->{
-            ItemAdapter itemAdapter = new ItemAdapter(items,getContext(),getLayoutInflater());
+            itemAdapter = new ItemAdapter(items,getContext(),getLayoutInflater());
             recyclerView.setLayoutManager(gridLayoutManager);
             recyclerView.setAdapter(itemAdapter);
+
+
+            new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+                @Override
+                public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                    return false;
+                }
+
+                @Override
+                public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+                    Toast.makeText(getContext(), "Saved to Favorites", Toast.LENGTH_SHORT).show();
+
+                }
+            }).attachToRecyclerView(recyclerView);
+
 
             searchInput.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -106,5 +150,6 @@ public class MainFragment extends Fragment {
         date = view.findViewById(R.id.text_date);
         date.setText(formattedDate);
     }
+
 
 }

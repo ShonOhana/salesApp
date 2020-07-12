@@ -60,7 +60,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> im
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Item item = itemList.get(position);
+        Item item = itemList.get(position + 1);
         holder.itemName.setText(item.getItemName());
 
         //animation
@@ -98,6 +98,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> im
             dialogPrice.setText(item.getCostNis() + " ₪ ");
             purchaseBtn.setOnClickListener(b->{
 
+                //for the animation
                 Intent intent = new Intent(context, DetailActivity.class);
                 intent.putExtra("item_name", item.getItemName());
                 intent.putExtra("cost_nis", item.getCostNis());
@@ -134,6 +135,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> im
 
     @Override
     public Filter getFilter() {
+
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
@@ -157,6 +159,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> im
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                mDataFilter.clear();
                 mDataFilter = (List<Item>) filterResults.values;
                 notifyDataSetChanged();
             }

@@ -4,6 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.SearchView;
 
 import com.example.postapp.R;
 import com.example.postapp.ui.main.view.MainFragment;
@@ -38,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
 
 
 }
