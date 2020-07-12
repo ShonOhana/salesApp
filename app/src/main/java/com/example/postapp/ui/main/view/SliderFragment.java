@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.postapp.R;
-import com.example.postapp.ui.main.model.SlideAdapter;
+import com.example.postapp.ui.main.adapters.SlideAdapter;
 
 
 public class SliderFragment extends Fragment {

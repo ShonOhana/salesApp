@@ -91,7 +91,7 @@ public class DetailFragment extends Fragment {
             });
 
             cost = view.findViewById(R.id.item_cost_tv);
-            cost.setText(itemCost + " שח");
+            cost.setText(itemCost + " ₪ ");
 
             imageView = view.findViewById(R.id.big_image);
             Picasso.get().load(image).into(imageView);

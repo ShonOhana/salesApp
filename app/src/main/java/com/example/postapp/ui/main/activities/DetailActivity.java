@@ -1,4 +1,4 @@
-package com.example.postapp.ui.main.controller;
+package com.example.postapp.ui.main.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 

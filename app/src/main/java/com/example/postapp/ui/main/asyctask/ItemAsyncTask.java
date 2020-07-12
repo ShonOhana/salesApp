@@ -1,13 +1,15 @@
-package com.example.postapp.ui.main.model;
+package com.example.postapp.ui.main.asyctask;
 
 import android.content.Context;
-
 import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
+
+import com.example.postapp.ui.main.model.Item;
+import com.example.postapp.ui.main.sqlite.room.ItemDao;
+import com.example.postapp.ui.main.sqlite.room.ItemsDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,21 +27,36 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class ItemAsyncTask extends AsyncTask<Void, Integer, ArrayList<Item>> {
+public class ItemAsyncTask extends AsyncTask<Void, List<Item>, ArrayList<Item>> {
 
     private static final String  TOKEN = "A2DACF08-55F1-4D03-90B7-8839E66AE57A";
     private static final String  TAG = ItemAsyncTask.class.getSimpleName();
 
     private MutableLiveData<List<Item>> listItems;
     private StringBuilder bstrb = null;
+    private Context context;
 
-    public ItemAsyncTask(MutableLiveData<List<Item>> listItems) {
+    public ItemAsyncTask(MutableLiveData<List<Item>> listItems, Context context) {
         this.listItems = listItems;
+        this.context = context;
     }
 
     @Override
     protected ArrayList<Item> doInBackground(Void... voids) {
         int count = 1;
+
+        //creating database
+        ItemsDatabase db = Room.databaseBuilder(context, ItemsDatabase.class, "items-db").fallbackToDestructiveMigration().build();
+
+        ItemDao dao = db.movieDao();
+        List daoList = dao.getAllMovies();
+
+
+        //if the daoList not empty, present first the dao list and then fetch the internet changes
+        //(if there is)
+        if (daoList != null && daoList.size() > 0){
+            publishProgress(daoList);
+        }
 
         try {
             URL url = new URL("https://api.rivhit.co.il/online/RivhitOnlineAPI.svc/Item.List");
@@ -85,6 +101,7 @@ public class ItemAsyncTask extends AsyncTask<Void, Integer, ArrayList<Item>> {
             try {
                 ArrayList<Item> results = new ArrayList();
                 int itemId = 0;
+                int quantity = 0;
                 String itemName;
                 String pictureLink;
                 String costNis;
@@ -92,7 +109,6 @@ public class ItemAsyncTask extends AsyncTask<Void, Integer, ArrayList<Item>> {
                 JSONObject root = new JSONObject(ItemsJson);
                 JSONObject dataObj = root.getJSONObject("data");
                 JSONArray itemListArr = dataObj.getJSONArray("item_list");
-
                 for (int i = 0; i < itemListArr.length(); i++) {
                     Log.d(TAG, "doInBackground:  i = " + i);
                     JSONObject itemListObj = (JSONObject) itemListArr.get(i);
@@ -104,6 +120,9 @@ public class ItemAsyncTask extends AsyncTask<Void, Integer, ArrayList<Item>> {
                     Item item = new Item(itemId,itemName,pictureLink,costNis);
                     results.add(item);
 
+                    //For Room
+                    dao.insertAll(item);
+
                 }
                 return results;
 
@@ -114,20 +133,25 @@ public class ItemAsyncTask extends AsyncTask<Void, Integer, ArrayList<Item>> {
 
         } catch (MalformedURLException e) {
             Log.d("TAG", " MalformedURLException" + e.getMessage());
-            return null;
+            return (ArrayList<Item>) daoList;
         } catch (UnsupportedEncodingException e) {
             Log.d("TAG", "Fail UnsupportedEncodingException" + e.getMessage());
-            return null;
+            return (ArrayList<Item>) daoList;
         } catch (IllegalStateException e) {
             Log.d("TAG", "Fail IllegalStateException" + e.getMessage());
-            return null;
+            return (ArrayList<Item>) daoList;
         } catch (IOException e) {
             Log.d("TAG", "Fail IOException" + e.getMessage());
-            return null;
+            return (ArrayList<Item>) daoList;
         }
-        return null;
+        return (ArrayList<Item>) daoList;
     }
 
+
+    @Override
+    protected void onProgressUpdate(List<Item>... values) {
+        listItems.setValue(values[0]);
+    }
 
     //update the UIThread on the change live data
     @Override

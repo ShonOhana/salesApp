@@ -14,8 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".ui.main.controller.DetailActivity"></activity>
-        <activity android:name=".ui.main.controller.MainActivity">
+        <activity android:name=".ui.main.activities.DetailActivity"></activity>
+        <activity android:name=".ui.main.activities.MainActivity"
+            android:windowSoftInputMode="adjustPan">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

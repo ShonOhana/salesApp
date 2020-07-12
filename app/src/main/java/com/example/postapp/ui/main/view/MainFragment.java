@@ -1,38 +1,30 @@
 package com.example.postapp.ui.main.view;
 
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.postapp.R;
-import com.example.postapp.ui.main.model.Item;
-import com.example.postapp.ui.main.model.ItemAdapter;
-import com.example.postapp.ui.main.model.ItemAsyncTask;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.postapp.ui.main.adapters.ItemAdapter;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Random;
 
 public class MainFragment extends Fragment {
@@ -40,6 +32,7 @@ public class MainFragment extends Fragment {
     private MainViewModel mViewModel;
     private TextView headerSales;
     private TextView date;
+    private EditText searchInput;
 
     public MainFragment() {
 
@@ -52,6 +45,10 @@ public class MainFragment extends Fragment {
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
         View view = inflater.inflate(R.layout.main_fragment, container, false);
+
+        //set the search
+        searchInput = view.findViewById(R.id.et_search);
+
 
 
         //set the current sales header
@@ -68,6 +65,23 @@ public class MainFragment extends Fragment {
             ItemAdapter itemAdapter = new ItemAdapter(items,getContext(),getLayoutInflater());
             recyclerView.setLayoutManager(gridLayoutManager);
             recyclerView.setAdapter(itemAdapter);
+
+            searchInput.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    itemAdapter.getFilter().filter(charSequence);
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
         });
 
         return view;

@@ -1,4 +1,4 @@
-package com.example.postapp.ui.main.model;
+package com.example.postapp.ui.main.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
